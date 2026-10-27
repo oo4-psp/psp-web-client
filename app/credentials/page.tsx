@@ -1,5 +1,5 @@
-import DashboardClient from '@/components/dashboard/dashboard-client'
+import CredentialsPageClient from '@/components/dashboard/credentials-page'
 
 export default function CredentialsPage() {
-  return <DashboardClient initialTab="credentials" />
+  return <CredentialsPageClient />
 }

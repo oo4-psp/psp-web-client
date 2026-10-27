@@ -1,5 +1,5 @@
-import DashboardClient from '@/components/dashboard/dashboard-client'
+import OrdersPageClient from '@/components/dashboard/orders-page'
 
 export default function OrdersPage() {
-  return <DashboardClient initialTab="orders" />
+  return <OrdersPageClient />
 }

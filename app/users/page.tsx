@@ -1,5 +1,5 @@
-import DashboardClient from '@/components/dashboard/dashboard-client'
+import { UsersPageClient } from '@/components/dashboard/secondary-pages'
 
 export default function UsersPage() {
-  return <DashboardClient initialTab="admin-users" />
+  return <UsersPageClient />
 }
