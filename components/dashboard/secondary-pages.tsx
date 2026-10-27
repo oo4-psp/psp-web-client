@@ -1,5 +1,15 @@
 'use client'
+
 import { DashboardLayout } from './dashboard-layout'
-import { renderUserDisputesTab, renderAdminUsersTab } from './views'
-export function DisputesPageClient() { return <DashboardLayout tab="disputes">{(data) => renderUserDisputesTab({ appeals: data.appeals, page: data.pages.appeals, total: data.totals.appeals, pageSize: 10, onPageChange: (page: number) => data.setPage('appeals', page) } as any)}</DashboardLayout> }
-export function UsersPageClient() { return <DashboardLayout tab="admin-users">{(data) => renderAdminUsersTab({ users: data.users, adminUsersPage: data.pages.users, adminUsersTotal: data.totals.users, usersPerPage: 10, onPageChange: (page: number) => data.setPage('users', page) } as any)}</DashboardLayout> }
+import { renderAdminUsersTab, renderUserDisputesTab } from './views'
+import { PAGE_SIZE, useDisputesData, useUsersData } from './use-page-data'
+
+export function DisputesPageClient() {
+  const data = useDisputesData()
+  return <DashboardLayout tab="disputes" notice={data.notice} onNoticeChange={data.setNotice} onRefresh={() => void data.load(false)}>{data.loading ? <div className="center-state">Завантаження спорів…</div> : renderUserDisputesTab({ appeals: data.appeals, page: data.page, total: data.total, pageSize: PAGE_SIZE, onPageChange: data.setPage })}</DashboardLayout>
+}
+
+export function UsersPageClient() {
+  const data = useUsersData()
+  return <DashboardLayout tab="admin-users" notice={data.notice} onNoticeChange={data.setNotice} onRefresh={() => void data.load(false)}>{data.loading ? <div className="center-state">Завантаження користувачів…</div> : renderAdminUsersTab({ users: data.users, adminUsersPage: data.page, adminUsersTotal: data.total, usersPerPage: PAGE_SIZE, onPageChange: data.setPage })}</DashboardLayout>
+}
