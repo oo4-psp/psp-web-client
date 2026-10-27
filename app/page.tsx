@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 
 import { request } from '@/lib/api'
+import { DashboardHeader, DashboardSidebar } from '@/components/dashboard/navigation'
 import {
     APPEAL_STATUS as appealStatusNames,
     CONFIRMABLE_ORDER_STATUSES as confirmable,
@@ -358,95 +359,18 @@ export default function Page() {
 	
 	return (
     <main className="app-shell">
-        <aside className="sidebar">
-            <div className="brand">
-                <div className="brand-mark">
-                    <ShieldCheck size={21} />
-                </div>
-                <span>
-                    trade<span className="brand-accent">desk</span>
-                </span>
-            </div>
-
-            <nav>
-                <button
-                    className={tab === 'orders' ? 'nav-item active' : 'nav-item'}
-                    onClick={() => setTab('orders')}
-                >
-                    <LayoutDashboard size={18} />
-                    Ордера
-                </button>
-
-                <button
-                    className={tab === 'credentials' ? 'nav-item active' : 'nav-item'}
-                    onClick={() => setTab('credentials')}
-                >
-                    <CreditCard size={18} />
-                    Реквізити
-                </button>
-
-                <button
-                    className={tab === 'disputes' ? 'nav-item active' : 'nav-item'}
-                    onClick={() => setTab('disputes')}
-                >
-                    <Scale size={18} />
-                    Диспути
-                </button>
-
-                {(user.role === 'ADMIN' || user.role === 'SUPPORT') && (
-                    <button
-                        className={tab === 'admin-users' ? 'nav-item active' : 'nav-item'}
-                        onClick={() => setTab('admin-users')}
-                    >
-                        <Users size={18} />
-                        Користувачі
-                    </button>
-                ) }
-            </nav>
-
-            <div className="sidebar-bottom">
-                <div className="profile">
-                    <div className="avatar">
-                        {user.login.slice(0, 1).toUpperCase()}
-                    </div>
-                    <div>
-                        <strong>{user.login}</strong>
-                        <small>{user.role}</small>
-                    </div>
-                </div>
-
-                <button
-                    className="logout"
-                    onClick={() => {
-                        setUser(null);
-                        setWallet(null);
-                    }}
-                    aria-label="Вийти"
-                >
-                    <LogOut size={17} />
-                </button>
-            </div>
-        </aside>
+        <DashboardSidebar
+          user={user}
+          activeTab={tab}
+          onTabChange={setTab}
+          onLogout={() => {
+            setUser(null)
+            setWallet(null)
+          }}
+        />
 
         <section className="content">
-            <header className="topbar">
-                <div>
-                    <p className="eyebrow">КАБІНЕТ ТРЕЙДЕРА</p>
-                    <h1>
-                        {tab === 'orders'
-                            ? 'Ордера'
-                            : tab === 'credentials'
-                                ? 'Платіжні реквізити'
-                                : tab == 'disputes'
-                                ? 'Диспути'
-                                : 'Користувачі'}
-                    </h1>
-                </div>
-
-                <button className="refresh" onClick={loadData} aria-label="Оновити">
-                    <RefreshCw size={17} /> Оновити
-                </button>
-            </header>
+            <DashboardHeader activeTab={tab} onRefresh={() => loadData()} />
 
             {notice && (
                 <div className="notice">
