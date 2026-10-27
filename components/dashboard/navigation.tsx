@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { CreditCard, LayoutDashboard, LogOut, Scale, ShieldCheck, Users } from 'lucide-react'
 import type { User } from '@/lib/domain'
 
@@ -29,14 +30,14 @@ export function DashboardSidebar({ user, activeTab, onTabChange, onLogout }: Pro
       </div>
       <nav aria-label="Основна навігація">
         {navigation.map(({ id, label, icon: Icon }) => (
-          <button key={id} className={activeTab === id ? 'nav-item active' : 'nav-item'} onClick={() => onTabChange(id)}>
+          <Link key={id} href={`/${id}`} className={activeTab === id ? 'nav-item active' : 'nav-item'} onClick={() => onTabChange(id)}>
             <Icon size={18} />{label}
-          </button>
+          </Link>
         ))}
         {canManageUsers && (
-          <button className={activeTab === 'admin-users' ? 'nav-item active' : 'nav-item'} onClick={() => onTabChange('admin-users')}>
+          <Link href="/users" className={activeTab === 'admin-users' ? 'nav-item active' : 'nav-item'} onClick={() => onTabChange('admin-users')}>
             <Users size={18} />Користувачі
-          </button>
+          </Link>
         )}
       </nav>
       <div className="sidebar-bottom">
