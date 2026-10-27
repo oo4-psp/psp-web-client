@@ -55,8 +55,10 @@ const appealStatusNames: Record<number, string> = {
     5: 'Потрібні докази'
 };
 
-function money(value: number, currency = 'USDT') { 
-    return `${value.toLocaleString('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}` 
+function money(value: number, currency = 'USDT', dig: 2) { 
+    if (currency == 'none')
+        return `${value.toLocaleString('uk-UA', { minimumFractionDigits: dig, maximumFractionDigits: dig })}`; 
+    return `${value.toLocaleString('uk-UA', { minimumFractionDigits: dig, maximumFractionDigits: dig })} ${currency}`;
 }
 function date(value?: string | null) { 
     return value ? new Date(value).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—' 
@@ -301,7 +303,7 @@ export default function Page() {
             daily_max_turnover: Number(data.daily_max_turnover), 
             daily_max_tx: Number(data.daily_max_tx), 
             max_open_orders: Number(data.max_open_orders), 
-            total_tx: Number(data.total_tx) 
+            total_tx: Number(data.total_max_tx) 
         }
         try { 
 		    await request('/api/credentials', { method: editing ? 'PATCH' : 'POST', body: JSON.stringify(editing ? { user_requisit_id: editing.id, ...payload } : payload) }); 
@@ -1054,25 +1056,27 @@ function CredentialsView({
                             <div>
                                 <small>Сума за операцію</small>
                                 <strong>
-                                    {item.min_amount} — {item.max_amount} {item.currency}
+                                    {money(item.min_amount, 'none', 0)} — {money(item.max_amount, 'none', 0)} {item.currency}
                                 </strong>
                             </div>
 
                             <div>
                                 <small>Оборот за день</small>
                                 <strong>
-                                    {item.daily_max_turnover} {item.currency}
+                                    {money(item.daily_turnover, 'none', 0)} із {money(item.daily_max_turnover, 'none', 0)}
                                 </strong>
                             </div>
 
                             <div>
                                 <small>Транзакцій / день</small>
-                                <strong>{item.daily_max_tx}</strong>
+                                <strong>
+                                    {item.total_success_orders} із {item.daily_max_tx}
+                                </strong>
                             </div>
 
                             <div>
                                 <small>Активних ордерів</small>
-                                <strong>{item.active_orders}</strong>
+                                <strong>{item.active_orders} із {item.max_open_orders ?? 0}</strong>
                             </div>
                         </div>
                     </article>
@@ -1152,16 +1156,25 @@ function CredentialForm({
                             <option value="OTP">OTP</option>
                             <option value="UksibBank">Укрсиб Банк</option>
                             <option value="UkgasBank">Ukgas Bank</option>
+                            <option value="OBank">OBank</option>
+                            <option value="IziBank">IziBank</option>
+                            <option value="KredoBank">KredoBank</option>
+                            <option value="FreeBank">FreeBank</option>
+                            <option value="MyRaif">MyRaif</option>
+                            <option value="UnexBank">UnexBank</option>
+                            <option value="GlobusBank">GlobusBank</option>
+                            <option value="Bank-Lviv">Банк Львів</option>
+                            <option value="Win-Bank">WinBank</option>
+                            <option value="Bank-Pivdennyi">Банк Південний</option>
+                            <option value="VST Bank">VST Bank</option>
                         </select>
                     </label>
 
                     <label>
                         Валюта
-                        <input
-                            name="currency"
-                            defaultValue={editing?.currency ?? 'UAH'}
-                            required
-                        />
+                        <select name="currency" required defaultValue={editing?.currency ?? 'UAH'}>
+                            <option value="UAH">UAH</option>
+                        </select>
                     </label>
 
                     <div className="form-grid">
@@ -1218,9 +1231,9 @@ function CredentialForm({
                         <label>
                             Всього транзакцій
                             <input
-                                name="total_tx"
+                                name="total_max_tx"
                                 type="number"
-                                defaultValue={editing?.total_tx ?? 0}
+                                defaultValue={editing?.total_max_tx ?? 0}
                                 required
                             />
                         </label>
