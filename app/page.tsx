@@ -20,59 +20,25 @@ import {
   X,
 } from 'lucide-react'
 
-import { request } from '@/lib/api.ts';
+import { request } from '@/lib/api'
+import {
+    APPEAL_STATUS as appealStatusNames,
+    CONFIRMABLE_ORDER_STATUSES as confirmable,
+    ORDER_STATUS as statusNames,
+    formatCardNumber,
+    formatDate as date,
+    formatMoney as money,
+    unformatCardNumber,
+    type Credential,
+    type Dispute,
+    type ExchangeRate,
+    type Order,
+    type User,
+    type UserInfo,
+    type Wallet,
+} from '@/lib/domain'
 
-type ExchangeRate = { currency: string; value: number }
-type User = { id: string; login: string; role: string }
-type Wallet = { availableBalance: number; frozenBalance: number; totalBalance: number; currency: string }
-type Order = { id: string; amount: number; amount_usdt?: number | null; exchange_rate?: number | null; completed_amount?: number | null; status: number; card: string; currency: string; receiver_name: string; receiver_bank?: string; created_at: string; deadline_at: string; completed_at?: string | null }
-type Credential = { id: string; created_at: string; is_alowed_work: boolean; min_amount: number; max_amount: number; daily_max_turnover: number; daily_max_tx: number; max_open_orders?: number; total_tx?: number; card_number: string; card_holder: string; currency: string; is_active: boolean; active_orders: number; total_opened_orders: number; total_success_orders: number; total_canceled_orders: number }
-type UserInfo = { id: string, login: string, role: string, wallet: Wallet, is_online: boolean };
-type Disput = { 
-    appeal_id: string, 
-    order_id: string, 
-    status_code: number, 
-    reject_reason: string, 
-    reject_reason_text: string, 
-    new_amount: number | null,
-    created_at: string,
-    resolved_at: string | null,
-    declined_at: string | null 
-};
-
-
-const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? ''
-const statusNames: Record<number, string> = { 
-	1: 'Нова', 2: 'Очікує оплати', 3: 'Клієнт оплатив', 
-	4: 'Клієнт скасував', 5: 'Виконано', 6: 'Апеляція', 
-	7: 'Not taken',  9: 'Прострочено',  
-}
-const confirmable = new Set([2, 4, 6, 9])
-
-const appealStatusNames: Record<number, string> = {
-    1: 'Відкритий', 2: 'Скасований',
-    3: 'Схвалений', 4: 'Підтверджений з іншою сумою',
-    5: 'Потрібні докази'
-};
-
-function money(value: number, currency = 'USDT', dig: 2) { 
-    if (currency == 'none')
-        return `${value.toLocaleString('uk-UA', { minimumFractionDigits: dig, maximumFractionDigits: dig })}`; 
-    return `${value.toLocaleString('uk-UA', { minimumFractionDigits: dig, maximumFractionDigits: dig })} ${currency}`;
-}
-function date(value?: string | null) { 
-    return value ? new Date(value).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—' 
-}
-
-function formatCardNumber(number: string) {
-    return number
-        .replace(/\D/g, '')
-        .replace(/(.{4})/g, '$1 ')
-        .trim();
-}
-function unformatCardNumber(number: string) {
-    return number.replace(/\D/g, '');
-}
+type Disput = Dispute
 
 export default function Page() {
     const [user, setUser] = useState<User | null>(null)
@@ -382,7 +348,7 @@ export default function Page() {
                         <p className="muted">Керуйте ордерами та платіжними реквізитами в одному місці.</p>
                         <form onSubmit={submitLogin} className="login-form">
                             <label>Логін<input value={login} onChange={(e) => setLogin(e.target.value)} placeholder="Введіть логін" required /></label>
-                            <label>Пароль<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Введіть пароль" required /></label>
+                            <label>Парол��<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Введіть пароль" required /></label>
                             
                             {loginError && <p className="error-text">{loginError}</p>}
                             <button className="primary-button" type="submit">Увійти <ArrowRight size={17} /></button>

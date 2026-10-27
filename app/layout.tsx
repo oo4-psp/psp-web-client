@@ -40,7 +40,7 @@ export default async function RootLayout({
 }>) {
 
   return (
-    <html lang="en">
+    <html lang="uk">
       <body className="antialiased">
           {children}
           {process.env.NODE_ENV === 'production' && <Analytics />}

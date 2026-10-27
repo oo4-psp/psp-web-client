@@ -724,6 +724,25 @@ td strong {
     font-size: 12px;
 }
 
+.empty-route {
+    min-height: 100vh;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 8px;
+    padding: 24px;
+    text-align: center;
+}
+
+.empty-route h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.empty-route .muted {
+    margin: 0;
+}
+
 .center-state {
     min-height: 100vh;
     display: grid;
